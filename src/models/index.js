@@ -7,6 +7,8 @@ const userSchema = new mongoose.Schema({
   userName: String,
   registeredOn: Date,
   role: String,
+  email: String,
+  password: String,
 });
 
 const eventSchema = new mongoose.Schema({
