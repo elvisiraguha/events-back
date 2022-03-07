@@ -1,4 +1,4 @@
-import { User } from "../models/index";
+import { User, Booking } from "../models/index";
 import AuthHelper from "../helpers/index";
 
 export default class Controller {
@@ -76,6 +76,16 @@ export default class Controller {
     return res.status(202).json({
       stats: 202,
       message: `${req.params.userName} is available`,
+    });
+  };
+
+  static getAllBookingsFromUser = async (req, res) => {
+    const user = req.param;
+    const bookings = await Booking.find({ user });
+    return res.status(200).json({
+      status: 200,
+      message: "success",
+      data: bookings,
     });
   };
 }

@@ -19,10 +19,22 @@ const eventSchema = new mongoose.Schema({
   vip: { sits: Number, price: Number },
   vvip: { sits: Number, price: Number },
   currency: String,
-  createdOn: Date,
-  happeningOn: { start: Date, end: Date },
+  createdAt: Date,
+  happeningAt: { start: Date, end: Date },
   organizer: String,
+});
+
+const bookingSchema = new mongoose.Schema({
+  event: String,
+  attendee: String,
+  paid: String,
+  paidAmount: Number,
+  sits: { regural: Number, vip: Number, vvip: Number },
+  currency: String,
+  createdAt: Date,
+  happeningAt: { start: Date, end: Date },
 });
 
 export const User = mongoose.model("User", userSchema);
 export const Event = mongoose.model("Event", eventSchema);
+export const Booking = mongoose.model("Booking", bookingSchema);

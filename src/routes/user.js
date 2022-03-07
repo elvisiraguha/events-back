@@ -7,5 +7,6 @@ router.get("/", controller.getAllUsers);
 router.post("/auth/signup", controller.signup);
 router.post("/auth/login", controller.signin);
 router.get("/checkUserName/:userName", controller.checkUserName);
+router.get("/booking", controller.getAllBookingsFromUser);
 
 export default router;
