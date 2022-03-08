@@ -52,8 +52,8 @@ export default class Controller {
   };
 
   static getAllBookingsForAnEvent = async (req, res) => {
-    const event = req.param;
-    const bookings = await Booking.find({ event: event.id });
+    const { event } = req.__custom;
+    const bookings = await Booking.find({ event: event._id });
     return res.status(200).json({
       status: 200,
       message: "success",
@@ -62,7 +62,16 @@ export default class Controller {
   };
 
   static bookAnEvent = async (req, res) => {
-    const booking = new Booking({ ...req.body });
+    const { event } = req.__custom;
+    const { user } = req.__user;
+    console.log(event);
+
+    const booking = new Booking({
+      ...req.body,
+      event: event._id,
+      happeningAt: event.happeningAt,
+      attendee: user._id,
+    });
     booking.save();
     return res.status(201).json({
       status: 201,

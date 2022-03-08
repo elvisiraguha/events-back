@@ -1,6 +1,11 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { config } from "dotenv";
 
-class PasswordHelper {
+config();
+
+const privateKey = process.env.JWT_SIGNING_KEY;
+class AuthHelper {
   static hashPassword = async (plainText) => {
     const hashedText = await bcrypt.hash(plainText, bcrypt.genSaltSync(10));
     return hashedText;
@@ -10,6 +15,13 @@ class PasswordHelper {
     const isSame = await bcrypt.compare(plainText, hashedText);
     return isSame;
   };
+
+  static signToken = async (data) => {
+    const token = await jwt.sign(data, privateKey, {
+      expiresIn: "1h",
+    });
+    return token;
+  };
 }
 
-export default PasswordHelper;
+export default AuthHelper;

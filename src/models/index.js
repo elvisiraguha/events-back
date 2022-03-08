@@ -29,7 +29,7 @@ const bookingSchema = new mongoose.Schema({
   attendee: String,
   paid: String,
   paidAmount: Number,
-  sits: { regural: Number, vip: Number, vvip: Number },
+  sits: { regular: Number, vip: Number, vvip: Number },
   currency: String,
   createdAt: Date,
   happeningAt: { start: Date, end: Date },

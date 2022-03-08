@@ -22,7 +22,17 @@ export default class Controller {
     const password = await AuthHelper.hashPassword(req.body.password);
     const user = new User({ ...req.body, password });
     await user.save();
-    const { userName, firstName, lastName, email, role } = user;
+    const { userName, firstName, lastName, email, role, _id } = user;
+
+    const token = await AuthHelper.signToken({
+      userName,
+      firstName,
+      lastName,
+      email,
+      role,
+      _id,
+    });
+
     res.status(201).json({
       status: 201,
       message: "success",
@@ -32,7 +42,9 @@ export default class Controller {
         lastName,
         email,
         role,
+        _id,
       },
+      token,
     });
   };
 
@@ -56,12 +68,22 @@ export default class Controller {
         message: "incorrect email or password",
       });
     }
-    const { userName, firstName, lastName, email, role } = user;
+    const { userName, firstName, lastName, email, role, _id } = user;
+
+    const token = await AuthHelper.signToken({
+      userName,
+      firstName,
+      lastName,
+      email,
+      role,
+      _id,
+    });
 
     res.status(201).json({
       stats: 201,
       message: "success",
-      data: { userName, firstName, lastName, email, role },
+      data: { userName, firstName, lastName, email, role, _id },
+      token,
     });
   };
 
