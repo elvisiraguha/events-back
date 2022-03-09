@@ -1,49 +1,13 @@
-import { Event, Booking, User } from "../models";
+import { User } from "../models";
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
+import CommonHelper from "../helpers/common";
 
 config();
 
 const privateKey = process.env.JWT_SIGNING_KEY;
-export default class CommonMiddleware {
-  static isValidEvent = async (req, res, next) => {
-    const eventId = req.params.eventId;
-    if (eventId.length !== 24) {
-      return res.status(400).json({
-        status: 400,
-        message: "invalid id",
-      });
-    }
-    const event = await Event.findById(eventId);
-    if (!event) {
-      return res.status(404).json({
-        status: 404,
-        message: "event not found",
-      });
-    }
-    req.__custom = { event };
-    return next();
-  };
 
-  static isValidBooking = async (req, res, next) => {
-    const bookingId = req.params.bookingId;
-    if (bookingId.length !== 24) {
-      return res.status(400).json({
-        status: 400,
-        message: "invalid id",
-      });
-    }
-    const booking = await Booking.findById(bookingId);
-    if (!booking) {
-      return res.status(404).json({
-        status: 404,
-        message: "booking not found",
-      });
-    }
-    req.__custom = { booking };
-    return next();
-  };
-
+export default class AuthMiddleware {
   static isUserAuthenticated = async (req, res, next) => {
     const token = req.headers.authorization?.split("Bearer ")[1];
     if (!token) {
@@ -98,5 +62,31 @@ export default class CommonMiddleware {
     } else {
       return next();
     }
+  };
+
+  static isValidUserQuery = async (req, res, next) => {
+    const query = req.query;
+    const queryObject = query.id
+      ? { _id: query?.id }
+      : { userName: query?.userName };
+
+    if (queryObject._id && !CommonHelper.isValidMongoId(queryObject._id)) {
+      return res.status(400).json({
+        status: 400,
+        message: "invalid id",
+      });
+    }
+
+    const user = await User.findOne(queryObject);
+
+    if (!user) {
+      return res.status(404).json({
+        stats: 404,
+        message: "user not found",
+      });
+    }
+
+    req.__user = { user };
+    return next();
   };
 }

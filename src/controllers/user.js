@@ -2,12 +2,23 @@ import { User, Booking } from "../models/index";
 import AuthHelper from "../helpers/index";
 
 export default class Controller {
-  static getAllUsers = async (req, res) => {
-    const users = await User.find({}, "userName firstName lastName email role");
+  static getUser = async (req, res) => {
+    const { user } = req.__user;
+    const { userName, firstName, lastName, email } = user;
     res.status(200).json({
       status: 200,
       message: "success",
-      data: users,
+      data: { userName, firstName, lastName, email },
+    });
+  };
+
+  static getCurrentUser = async (req, res) => {
+    const { user } = req.__user;
+    const { userName, firstName, lastName, email } = user;
+    res.status(200).json({
+      status: 200,
+      message: "success",
+      data: { userName, firstName, lastName, email },
     });
   };
 
@@ -102,12 +113,27 @@ export default class Controller {
   };
 
   static getAllBookingsFromUser = async (req, res) => {
-    const user = req.param;
-    const bookings = await Booking.find({ user });
+    const { user } = req.__user;
+
+    const bookings = await Booking.find({ attendee: user._id });
     return res.status(200).json({
       status: 200,
       message: "success",
       data: bookings,
+    });
+  };
+
+  static updateUserProfile = async (req, res) => {
+    const user = req.__user;
+    const options = {
+      new: true,
+      fields: "userName firstName lastName email role",
+    };
+    const updatedUser = await User.findOneAndUpdate(user, req.body, options);
+    return res.status(201).json({
+      status: 201,
+      message: "updated",
+      data: updatedUser,
     });
   };
 }

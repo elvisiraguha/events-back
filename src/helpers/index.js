@@ -5,7 +5,7 @@ import { config } from "dotenv";
 config();
 
 const privateKey = process.env.JWT_SIGNING_KEY;
-class AuthHelper {
+export default class AuthHelper {
   static hashPassword = async (plainText) => {
     const hashedText = await bcrypt.hash(plainText, bcrypt.genSaltSync(10));
     return hashedText;
@@ -23,5 +23,3 @@ class AuthHelper {
     return token;
   };
 }
-
-export default AuthHelper;
