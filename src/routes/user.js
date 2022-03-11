@@ -1,6 +1,7 @@
 import express from "express";
 import controller from "../controllers/user";
 import AuthMiddleware from "../middlewares/auth";
+import OrganizerReqestMiddleware from "../middlewares/organizerRequest";
 
 const router = express.Router();
 
@@ -23,6 +24,13 @@ router.patch(
   "/profile",
   AuthMiddleware.isUserAuthenticated,
   controller.updateUserProfile
+);
+
+router.post(
+  "/organizerRequest",
+  AuthMiddleware.isUserAuthenticated,
+  OrganizerReqestMiddleware.isNewOrganizerRequest,
+  controller.organizerRequest
 );
 
 export default router;

@@ -1,4 +1,4 @@
-import { User } from "../models";
+import { User, OrganizerRequest } from "../models";
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import CommonHelper from "../helpers/common";
@@ -87,6 +87,23 @@ export default class AuthMiddleware {
     }
 
     req.__user = { user };
+    return next();
+  };
+
+  static isNewOrganizerRequest = async (req, res, next) => {
+    const { user: requestUser } = req.__user;
+
+    const isExistingRequest = OrganizerRequest.findOne({
+      _id: requestUser._id,
+    });
+
+    if (isExistingRequest) {
+      return res.status(400).json({
+        stats: 400,
+        message:
+          "you have already submitted your request to become an organizer, be patient while we evaluate your request",
+      });
+    }
     return next();
   };
 }

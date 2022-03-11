@@ -36,6 +36,16 @@ const bookingSchema = new mongoose.Schema({
   happeningAt: { start: Date, end: Date },
 });
 
+const organizerRequestSchema = new mongoose.Schema({
+  user: String,
+  comment: String,
+  requestedAt: Date,
+});
+
 export const User = mongoose.model("User", userSchema);
 export const Event = mongoose.model("Event", eventSchema);
 export const Booking = mongoose.model("Booking", bookingSchema);
+export const OrganizerRequest = mongoose.model(
+  "OrganizerRequest",
+  organizerRequestSchema
+);

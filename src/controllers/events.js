@@ -45,10 +45,7 @@ export default class Controller {
   static deleteEvent = async (req, res) => {
     const { event } = req.__custom;
     await Event.deleteOne({ _id: event._id });
-    return res.status(201).json({
-      status: 204,
-      message: "deleted",
-    });
+    return res.status(204);
   };
 
   static getAllBookingsForAnEvent = async (req, res) => {
@@ -64,7 +61,6 @@ export default class Controller {
   static bookAnEvent = async (req, res) => {
     const { event } = req.__custom;
     const { user } = req.__user;
-    console.log(event);
 
     const booking = new Booking({
       ...req.body,

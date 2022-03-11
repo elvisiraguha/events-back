@@ -1,4 +1,9 @@
-import { User, Booking } from "../models/index";
+import {
+  User,
+  Booking,
+  organizerRequest,
+  OrganizerRequest,
+} from "../models/index";
 import AuthHelper from "../helpers/index";
 
 export default class Controller {
@@ -31,7 +36,7 @@ export default class Controller {
       });
     }
     const password = await AuthHelper.hashPassword(req.body.password);
-    const user = new User({ ...req.body, password });
+    const user = new User({ ...req.body, password, role: "user" });
     await user.save();
     const { userName, firstName, lastName, email, role, _id } = user;
 
@@ -124,16 +129,39 @@ export default class Controller {
   };
 
   static updateUserProfile = async (req, res) => {
-    const user = req.__user;
+    const { user } = req.__user;
     const options = {
       new: true,
       fields: "userName firstName lastName email role",
     };
-    const updatedUser = await User.findOneAndUpdate(user, req.body, options);
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: user._id },
+      req.body,
+      options
+    );
     return res.status(201).json({
       status: 201,
       message: "updated",
       data: updatedUser,
+    });
+  };
+
+  static organizerRequest = async (req, res) => {
+    const { user } = req.__user;
+
+    const request = new OrganizerRequest({
+      user: user._id,
+      requestedAt: new Date(),
+      comment: req.body?.comment,
+    });
+
+    await request.save();
+
+    return res.status(201).json({
+      status: 201,
+      message: "request received",
+      data: request,
     });
   };
 }
