@@ -9,12 +9,12 @@ config();
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 main().catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect("mongodb://localhost:27017/test");
+  await mongoose.connect(process.env.MONGODB_CONNECTION_STRING);
 
   app.use("/v0/api", router);
 
