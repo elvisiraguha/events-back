@@ -1,10 +1,6 @@
-import {
-  User,
-  Booking,
-  organizerRequest,
-  OrganizerRequest,
-} from "../models/index";
+import { User, Booking, OrganizerRequest } from "../models/index";
 import AuthHelper from "../helpers/index";
+import { redisClient } from "../app";
 
 export default class Controller {
   static getUser = async (req, res) => {
@@ -162,6 +158,15 @@ export default class Controller {
       status: 201,
       message: "request received",
       data: request,
+    });
+  };
+
+  static logoutUser = async (req, res) => {
+    const { user } = req.__user;
+    const loggedOut = await redisClient.del(`token-${user.userName}`);
+    return res.status(200).json({
+      status: 200,
+      message: "logout success",
     });
   };
 }

@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
+import { redisClient } from "../app";
 
 config();
 
@@ -20,6 +21,7 @@ export default class AuthHelper {
     const token = await jwt.sign(data, privateKey, {
       expiresIn: "1h",
     });
+    await redisClient.set(`token-${data.userName}`, token, { EX: 60 * 60 });
     return token;
   };
 }

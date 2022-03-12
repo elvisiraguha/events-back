@@ -2,6 +2,7 @@ import { User, OrganizerRequest } from "../models";
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import CommonHelper from "../helpers/common";
+import { redisClient } from "../app";
 
 config();
 
@@ -18,6 +19,15 @@ export default class AuthMiddleware {
     } else {
       try {
         const data = await jwt.verify(token, privateKey);
+        const unExpiredToken = await redisClient.get(`token-${data.userName}`);
+
+        if (!unExpiredToken) {
+          return res.status(403).json({
+            status: 403,
+            message: "unauthenticated attempt, token unregistered",
+          });
+        }
+
         const user = await User.findById(data._id);
 
         if (!user) {

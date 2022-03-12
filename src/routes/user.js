@@ -33,4 +33,10 @@ router.post(
   controller.organizerRequest
 );
 
+router.post(
+  "/auth/logout",
+  AuthMiddleware.isUserAuthenticated,
+  controller.logoutUser
+);
+
 export default router;
